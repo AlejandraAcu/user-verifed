@@ -1,5 +1,7 @@
 const catchError = require('../utils/catchError');
 const { getAllServices, createServices, deleteServices, getOneServices, updateServices } = require('../services/user.services');
+const EmailCode = require('../models/EmailCode');
+const User = require('../models/User');
 
 const getAll = catchError(async(req, res) => {
     const results = await getAllServices();
@@ -55,6 +57,19 @@ const logged = catchError(async(req,res) =>{
     return res.json(user)
 })
 
+const userVerified = catchError(async (req, res) => {
+    const { code } = req.params
+  
+    const result = await EmailCode.findOne({ where: { code } })
+    const user = await User.findByPk(result.userId)
+    if (!user) return res.sendStatus(404)
+  
+    const userUpdate = await user.update({ isVerified: true })
+    await result.destroy()
+  
+    return res.json(userUpdate)
+  })
+
 module.exports = {
     getAll,
     create,
@@ -62,5 +77,6 @@ module.exports = {
     remove,
     update,
     login,
-    logged
+    logged,
+    userVerified
 }
