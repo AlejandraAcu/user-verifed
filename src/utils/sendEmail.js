@@ -1,31 +1,25 @@
-const nodemailer = require("nodemailer");
-
-const sendEmail = (options) => new Promise((resolve, reject) => {
-
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL,
-            pass: process.env.PASSWORD
-        },
-				tls:{
-						rejectUnauthorized:false
-        },
-				secure:false
-    })
-    const mailOptions = {
-        from: process.env.EMAIL,
-        ...options
+const nodemailer = require('nodemailer');
+const sendEmail = (options) => {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD
+    },
+    tls: {
+      rejectUnauthorized: false
+    },
+  });
+  const mailOptions = {
+    from: process.env.EMAIL,
+    ...options
+  }
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
     }
-    transporter.sendMail(mailOptions, (error, info) => {
-        console.log(error, info)
-        if (error) {
-            //console.log(error);
-            console.log('me ejecute soy el error')
-            return reject({ message: "An error has occured" })
-        }
-        return resolve({ message: "Email sent successfully" })
-    })
-})
-
-module.exports = sendEmail;
+  });
+}
+module.exports = { sendEmail }
