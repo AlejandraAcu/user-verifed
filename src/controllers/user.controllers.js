@@ -3,7 +3,7 @@ const { getAllServices, createServices, deleteServices, getOneServices, updateSe
 const EmailCode = require('../models/EmailCode');
 const User = require('../models/User');
 const { sendEmail } = require('../utils/sendEmail');
-const { where } = require('sequelize');
+const bcrypt = require ("bcrypt")
 
 const getAll = catchError(async(req, res) => {
     const results = await getAllServices();
